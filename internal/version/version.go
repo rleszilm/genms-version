@@ -9,6 +9,7 @@ import (
 
 const (
 	defaultMaster string = "master"
+	defaultBranch string = "detached"
 
 	defaultVersionTmplSrc = `
 {{- if eq .Branch .Options.Master -}}
@@ -68,9 +69,9 @@ func init() {
 }
 
 // Versioner is an interface that caontains data about the version of a resource.
-//counterfeiter:generate . Versioner
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . Versioner
 type Versioner interface {
-	Branch() (string, error)
+	Branches() ([]string, error)
 	Commit() (string, error)
 	Committish() (string, error)
 	Tag() (string, error)
@@ -78,12 +79,13 @@ type Versioner interface {
 
 // VersionOption defines the options that can be passed in.
 type VersionOption struct {
-	Branch   *bool
-	Docker   *bool
-	Full     *bool
-	Master   *string
-	Revision *bool
-	Semver   *bool
+	Branch        *bool
+	Docker        *bool
+	Full          *bool
+	Master        *string
+	DefaultBranch *string
+	Revision      *bool
+	Semver        *bool
 }
 
 // SetBranch sets the WithBranch flag.
@@ -104,6 +106,11 @@ func (v *VersionOption) SetFull(b bool) {
 // SetMaster sets the WithMaster flag.
 func (v *VersionOption) SetMaster(s string) {
 	v.Master = &s
+}
+
+// SetDefaultBranch sets the WithDefaultBranch flag.
+func (v *VersionOption) SetDefaultBranch(s string) {
+	v.DefaultBranch = &s
 }
 
 // SetRevision sets the WithBuild flag.
@@ -148,6 +155,7 @@ func options(vos ...*VersionOption) *VersionOption {
 	opts.SetBranch(false)
 	opts.SetDocker(false)
 	opts.SetMaster(defaultMaster)
+	opts.SetDefaultBranch(defaultBranch)
 	opts.SetRevision(false)
 	opts.SetSemver(false)
 
@@ -163,6 +171,9 @@ func options(vos ...*VersionOption) *VersionOption {
 		}
 		if vo.Master != nil {
 			opts.Master = vo.Master
+		}
+		if vo.DefaultBranch != nil {
+			opts.DefaultBranch = vo.DefaultBranch
 		}
 		if vo.Revision != nil {
 			opts.Revision = vo.Revision
@@ -271,6 +282,8 @@ func (v *Version) args() map[string]interface{} {
 
 // NewVersion returns a new Version.
 func NewVersion(ver Versioner, vos ...*VersionOption) (*Version, error) {
+	opts := options(vos...)
+
 	t, err := ver.Tag()
 	if err != nil {
 		return nil, err
@@ -286,9 +299,16 @@ func NewVersion(ver Versioner, vos ...*VersionOption) (*Version, error) {
 		return nil, err
 	}
 
-	branch, err := ver.Branch()
+	branches, err := ver.Branches()
 	if err != nil {
 		return nil, err
+	}
+
+	var branch string
+	if len(branches) != 1 {
+		branch = *opts.DefaultBranch
+	} else {
+		branch = branches[0]
 	}
 
 	committish, err := ver.Committish()
@@ -303,7 +323,7 @@ func NewVersion(ver Versioner, vos ...*VersionOption) (*Version, error) {
 		branch:     branch,
 		commit:     commit,
 		committish: committish,
-		options:    options(vos...),
+		options:    opts,
 		tmpl:       defaultVersionTmpl,
 	}
 

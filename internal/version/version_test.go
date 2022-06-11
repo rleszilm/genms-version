@@ -109,7 +109,7 @@ func TestMajor(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)
@@ -192,7 +192,7 @@ func TestMinor(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)
@@ -275,7 +275,7 @@ func TestPatch(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)
@@ -376,7 +376,7 @@ func TestIncMajor(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)
@@ -478,7 +478,7 @@ func TestIncPatch(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)
@@ -580,7 +580,7 @@ func TestIncMinor(t *testing.T) {
 	fv := &versionfakes.FakeVersioner{}
 	for _, tc := range testcases {
 		t.Run(tc.desc, func(t *testing.T) {
-			fv.BranchReturns(tc.branch, nil)
+			fv.BranchesReturns([]string{tc.branch}, nil)
 			fv.CommitReturns(tc.commit, nil)
 			fv.CommittishReturns(tc.committish, nil)
 			fv.TagReturns(tc.tag, nil)

@@ -34,6 +34,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("revision", "r", false, "When set the revision will be included in the version.")
 	rootCmd.PersistentFlags().BoolP("semver", "s", false, "When set the semver will be included in the version regardless of whether the version is for the master branch.")
 	rootCmd.PersistentFlags().StringP("master", "m", "master", "Overrides the \"master\" branch of the repo.")
+	rootCmd.PersistentFlags().StringP("default-branch", "B", "", "When set this branch will be used when one cannot be determined.")
 }
 
 func root(cmd *cobra.Command, args []string) {
@@ -95,6 +96,15 @@ func buildVersion(cmd *cobra.Command, args []string) (*version.Version, error) {
 
 	}
 	vopts.SetMaster(master)
+
+	defaultBranch, err := cmd.Flags().GetString("default-branch")
+	if err != nil {
+		return nil, fmt.Errorf("invalid default-branch: %w", err)
+
+	}
+	if defaultBranch != "" {
+		vopts.SetDefaultBranch(defaultBranch)
+	}
 
 	ver, err := version.NewVersion(git, vopts)
 	if err != nil {

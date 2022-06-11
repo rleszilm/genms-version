@@ -8,16 +8,16 @@ import (
 )
 
 type FakeVersioner struct {
-	BranchStub        func() (string, error)
-	branchMutex       sync.RWMutex
-	branchArgsForCall []struct {
+	BranchesStub        func() ([]string, error)
+	branchesMutex       sync.RWMutex
+	branchesArgsForCall []struct {
 	}
-	branchReturns struct {
-		result1 string
+	branchesReturns struct {
+		result1 []string
 		result2 error
 	}
-	branchReturnsOnCall map[int]struct {
-		result1 string
+	branchesReturnsOnCall map[int]struct {
+		result1 []string
 		result2 error
 	}
 	CommitStub        func() (string, error)
@@ -60,15 +60,15 @@ type FakeVersioner struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeVersioner) Branch() (string, error) {
-	fake.branchMutex.Lock()
-	ret, specificReturn := fake.branchReturnsOnCall[len(fake.branchArgsForCall)]
-	fake.branchArgsForCall = append(fake.branchArgsForCall, struct {
+func (fake *FakeVersioner) Branches() ([]string, error) {
+	fake.branchesMutex.Lock()
+	ret, specificReturn := fake.branchesReturnsOnCall[len(fake.branchesArgsForCall)]
+	fake.branchesArgsForCall = append(fake.branchesArgsForCall, struct {
 	}{})
-	stub := fake.BranchStub
-	fakeReturns := fake.branchReturns
-	fake.recordInvocation("Branch", []interface{}{})
-	fake.branchMutex.Unlock()
+	stub := fake.BranchesStub
+	fakeReturns := fake.branchesReturns
+	fake.recordInvocation("Branches", []interface{}{})
+	fake.branchesMutex.Unlock()
 	if stub != nil {
 		return stub()
 	}
@@ -78,40 +78,40 @@ func (fake *FakeVersioner) Branch() (string, error) {
 	return fakeReturns.result1, fakeReturns.result2
 }
 
-func (fake *FakeVersioner) BranchCallCount() int {
-	fake.branchMutex.RLock()
-	defer fake.branchMutex.RUnlock()
-	return len(fake.branchArgsForCall)
+func (fake *FakeVersioner) BranchesCallCount() int {
+	fake.branchesMutex.RLock()
+	defer fake.branchesMutex.RUnlock()
+	return len(fake.branchesArgsForCall)
 }
 
-func (fake *FakeVersioner) BranchCalls(stub func() (string, error)) {
-	fake.branchMutex.Lock()
-	defer fake.branchMutex.Unlock()
-	fake.BranchStub = stub
+func (fake *FakeVersioner) BranchesCalls(stub func() ([]string, error)) {
+	fake.branchesMutex.Lock()
+	defer fake.branchesMutex.Unlock()
+	fake.BranchesStub = stub
 }
 
-func (fake *FakeVersioner) BranchReturns(result1 string, result2 error) {
-	fake.branchMutex.Lock()
-	defer fake.branchMutex.Unlock()
-	fake.BranchStub = nil
-	fake.branchReturns = struct {
-		result1 string
+func (fake *FakeVersioner) BranchesReturns(result1 []string, result2 error) {
+	fake.branchesMutex.Lock()
+	defer fake.branchesMutex.Unlock()
+	fake.BranchesStub = nil
+	fake.branchesReturns = struct {
+		result1 []string
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVersioner) BranchReturnsOnCall(i int, result1 string, result2 error) {
-	fake.branchMutex.Lock()
-	defer fake.branchMutex.Unlock()
-	fake.BranchStub = nil
-	if fake.branchReturnsOnCall == nil {
-		fake.branchReturnsOnCall = make(map[int]struct {
-			result1 string
+func (fake *FakeVersioner) BranchesReturnsOnCall(i int, result1 []string, result2 error) {
+	fake.branchesMutex.Lock()
+	defer fake.branchesMutex.Unlock()
+	fake.BranchesStub = nil
+	if fake.branchesReturnsOnCall == nil {
+		fake.branchesReturnsOnCall = make(map[int]struct {
+			result1 []string
 			result2 error
 		})
 	}
-	fake.branchReturnsOnCall[i] = struct {
-		result1 string
+	fake.branchesReturnsOnCall[i] = struct {
+		result1 []string
 		result2 error
 	}{result1, result2}
 }
@@ -287,8 +287,8 @@ func (fake *FakeVersioner) TagReturnsOnCall(i int, result1 string, result2 error
 func (fake *FakeVersioner) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.branchMutex.RLock()
-	defer fake.branchMutex.RUnlock()
+	fake.branchesMutex.RLock()
+	defer fake.branchesMutex.RUnlock()
 	fake.commitMutex.RLock()
 	defer fake.commitMutex.RUnlock()
 	fake.committishMutex.RLock()
